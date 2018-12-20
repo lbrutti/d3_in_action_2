@@ -14,7 +14,7 @@
           d.impact = d.favorites.length + d.retweets.length;
           d.tweetTime = new Date(d.timestamp);
         });
-        
+
         var maxImpact = d3.max(incomingData, d => d.impact);
         var startEnd = d3.extent(incomingData, d => d.tweetTime);
         var timeRamp = d3.scaleTime().domain(startEnd).range([20,480]);
@@ -25,14 +25,20 @@
           .domain([0,maxImpact]).range(["white","#75739F"])
 
         var tweetG = d3.select("svg")
+        //aggiungo nodi <g> che possono avere figli e faccio
+        //bind dei dati al nodo g
           .selectAll("g")
           .data(incomingData)
           .enter()
           .append("g")
             .attr("transform", d =>
               `translate( ${timeRamp(d.tweetTime)} , ${(480 - yScale(d.impact))} )`);
+
+        //qui ogni elemento <g> creato ha un suo dato associato e posso
+        //riferirlo nei vari callback
+        //${} : indica template literal. sintassi ES6 per inserire variabile in stringa senza concatenare https://stackoverflow.com/questions/35835362/what-does-dollar-sign-and-curly-braces-mean-in-a-string-in-javascript 
         tweetG.append("circle")
-            .attr("r", d => radiusScale(d.impact))
+            .attr("r", d => radiusScale(d.impact)) //d è il dato legato prima
             .style("fill", "#75739F")
             .style("stroke", "black")
             .style("stroke-width", "1px");
