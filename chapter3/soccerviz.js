@@ -21,8 +21,17 @@ function createSoccerViz() {
     var teamG = d3.selectAll("g.overallG");
     //in ogni elemento g inserisco un cerchio
     teamG
-      .append("circle")
-      .attr("r", 20);
+      .append("circle").attr("r", 0)
+      //chain delle transition
+      //prima transition
+      .transition()
+        .delay((d,i) => i * 100)
+        .duration(500)
+        .attr("r", 40)
+      //transition seguente
+      .transition()
+        .duration(500)
+        .attr("r", 20);
     //e una label
     teamG
       .append("text")
@@ -50,19 +59,22 @@ function createSoccerViz() {
         .select("circle")
         .transition()
         .duration(1000)
+        .delay(200)
         .attr("r", d => radiusScale(d[datapoint]));
     }
 
     teamG
       .on("mouseover", highlightRegion)
-      .on("mouseout", function(){
-        d3.selectAll("g.overallG")
-          .select("circle")
-          .classed("inactive", false)
-          .classed("active", false);
-      });
+      .on("mouseout", unHighlight);
 
     function highlightRegion(d){
+      //seleziono, nel contesto dell'elemento su cui ho
+      //fatto mouseover, il testo.
+      //gli associo classe "active" e lo sposto verticalmente
+      d3.select(this)
+        .select("text")
+        .classed("active", true)
+        .attr("y", 10);
       d3.selectAll("g.overallG")
         .select("circle")
         // selection.attr(name[, value]) <>
@@ -75,7 +87,21 @@ function createSoccerViz() {
         // (nodes[i]).
         // The function’s return value is then used to set each element’s attribute.
         // A null value will remove the specified attribute.
-        .attr("class", p => p.region === d.region ? "active" : "inactive");
+        .each(function(p){
+          p.region == d.region ?
+            d3.select(this).classed("active", true) :
+            d3.select(this).classed("inactive", false)
+        });
+        this.parentElement.appendChild(this);
     }
+    function unHighlight(){
+     d3.selectAll("g.overallG")
+       .select("circle")
+       .attr("class", "");
+     d3.selectAll("g.overallG")
+       .select("text")
+       .classed("active", false)
+       .attr("y", 30)
+   }
   }
 }
