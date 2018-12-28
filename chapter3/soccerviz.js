@@ -48,6 +48,8 @@ function createSoccerViz() {
         .clamp(true);
       d3.selectAll("g.overallG")
         .select("circle")
+        .transition()
+        .duration(1000)
         .attr("r", d => radiusScale(d[datapoint]));
     }
 
