@@ -36,9 +36,9 @@ function createSoccerViz() {
     teamG
       .append("text")
       .style("text-anchor", "middle")
+      .style("pointer-events","none")
       .attr("y", 30)
       .text(d => d.team);
-
     //bottoni:
     const dataKeys = Object.keys(incomingData[0])
       .filter(d => d !== "team" && d != "region");
@@ -77,22 +77,14 @@ function createSoccerViz() {
         .attr("y", 10);
       d3.selectAll("g.overallG")
         .select("circle")
-        // selection.attr(name[, value]) <>
-        // If a value is specified, sets the attribute with the specified name to the
-        // specified value on the selected elements and returns this selection.
-        // If the value is a constant, all elements are given the same attribute value;
-        // otherwise, if the value is a function, it is evaluated for each selected element,
-        // in order, being passed the current datum (d), the current index (i),
-        //  and the current group (nodes), with this as the current DOM element
-        // (nodes[i]).
-        // The function’s return value is then used to set each element’s attribute.
-        // A null value will remove the specified attribute.
         .each(function(p){
           p.region == d.region ?
             d3.select(this).classed("active", true) :
-            d3.select(this).classed("inactive", false)
+            d3.select(this).classed("inactive", false);
         });
-        this.parentElement.appendChild(this);
+        //this e' il gruppo di classe overallG su cui ho fatto mouseover
+        d3.select(this).raise();
+        // this.parentElement.appendChild(this);
     }
     function unHighlight(){
      d3.selectAll("g.overallG")
@@ -102,6 +94,8 @@ function createSoccerViz() {
        .select("text")
        .classed("active", false)
        .attr("y", 30)
+     d3.select(this).lower();
+
    }
   }
 }
