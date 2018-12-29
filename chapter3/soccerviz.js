@@ -25,18 +25,18 @@ function createSoccerViz() {
       //chain delle transition
       //prima transition
       .transition()
-        .delay((d,i) => i * 100)
-        .duration(500)
-        .attr("r", 40)
+      .delay((d, i) => i * 100)
+      .duration(500)
+      .attr("r", 40)
       //transition seguente
       .transition()
-        .duration(500)
-        .attr("r", 20);
+      .duration(500)
+      .attr("r", 20);
     //e una label
     teamG
       .append("text")
       .style("text-anchor", "middle")
-      .style("pointer-events","none")
+      .style("pointer-events", "none")
       .attr("y", 30)
       .text(d => d.team);
     //bottoni:
@@ -49,25 +49,32 @@ function createSoccerViz() {
       .on("click", buttonClick)
       .html(d => d);
 
-    function buttonClick(datapoint){
-      var maxValue  = d3.max(incomingData, d=>parseFloat(d[datapoint]));
+    function buttonClick(datapoint) {
+      var maxValue = d3.max(incomingData, d => parseFloat(d[datapoint]));
       var radiusScale = d3.scaleLinear()
         .domain([0, maxValue])
         .range([2, 20])
         .clamp(true);
+      var ybRamp = d3.scaleLinear()
+        .interpolate(d3.interpolateHsl)
+        .domain([0, maxValue])
+        .range(["blue", "yellow"]);
       d3.selectAll("g.overallG")
         .select("circle")
         .transition()
         .duration(1000)
         .delay(200)
-        .attr("r", d => radiusScale(d[datapoint]));
+        .attr("r", d => radiusScale(d[datapoint]))
+        .style("fill", d => ybRamp(d[datapoint]));
     }
 
     teamG
       .on("mouseover", highlightRegion)
       .on("mouseout", unHighlight);
 
-    function highlightRegion(d){
+    var teamColor = d3.rgb("#75739F");
+
+    function highlightRegion(d) {
       //seleziono, nel contesto dell'elemento su cui ho
       //fatto mouseover, il testo.
       //gli associo classe "active" e lo sposto verticalmente
@@ -77,25 +84,23 @@ function createSoccerViz() {
         .attr("y", 10);
       d3.selectAll("g.overallG")
         .select("circle")
-        .each(function(p){
-          p.region == d.region ?
-            d3.select(this).classed("active", true) :
-            d3.select(this).classed("inactive", false);
-        });
-        //this e' il gruppo di classe overallG su cui ho fatto mouseover
-        d3.select(this).raise();
-        // this.parentElement.appendChild(this);
+        .style("fill", p => p.region == d.region ? teamColor.darker(.75) : teamColor.brighter(.5));
+      //this e' il gruppo di classe overallG su cui ho fatto mouseover
+      d3.select(this).raise();
+      // this.parentElement.appendChild(this);
     }
-    function unHighlight(){
-     d3.selectAll("g.overallG")
-       .select("circle")
-       .attr("class", "");
-     d3.selectAll("g.overallG")
-       .select("text")
-       .classed("active", false)
-       .attr("y", 30)
-     d3.select(this).lower();
 
-   }
+    function unHighlight() {
+      d3.selectAll("g.overallG")
+        .select("circle")
+        .style("fill", teamColor)
+        .attr("class", "");
+      d3.selectAll("g.overallG")
+        .select("text")
+        .classed("active", false)
+        .attr("y", 30)
+      d3.select(this).lower();
+
+    }
   }
 }
