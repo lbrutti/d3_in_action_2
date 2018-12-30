@@ -9,7 +9,7 @@ function createSoccerViz() {
   var tenColorScale = d3.scaleOrdinal()
     .domain(["UEFA", "CONMEBOL", "CAF", "AFC"])
     .range(d3.schemeCategory10);
-    
+
   function overallTeamViz(incomingData) {
     d3.select("svg")
       .append("g") //inserisco un gruppo globale come wrapper
@@ -67,13 +67,18 @@ function createSoccerViz() {
         .interpolate(d3.interpolateHsl)
         .domain([0, maxValue])
         .range(["blue", "yellow"]);
+
+      var colorQuantize = d3.scaleQuantize()
+        .domain([0, maxValue])
+        .range(colorbrewer.Reds[3]);
       d3.selectAll("g.overallG")
         .select("circle")
         .transition()
         .duration(1000)
         .delay(200)
         .attr("r", d => radiusScale(d[datapoint]))
-        .style("fill", d => tenColorScale(d.region));
+        // .style("fill", d => tenColorScale(d.region));
+        .style("fill", d => colorQuantize(d[datapoint]));
     }
 
     teamG
