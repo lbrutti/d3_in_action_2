@@ -4,7 +4,12 @@ function createSoccerViz() {
   d3.csv("../data/worldcup.csv", data => {
     overallTeamViz(data);
   });
-
+  //associa il colore secondo uno schema discreto
+  //si basa sul dominio delle regioni
+  var tenColorScale = d3.scaleOrdinal()
+    .domain(["UEFA", "CONMEBOL", "CAF", "AFC"])
+    .range(d3.schemeCategory10);
+    
   function overallTeamViz(incomingData) {
     d3.select("svg")
       .append("g") //inserisco un gruppo globale come wrapper
@@ -22,6 +27,7 @@ function createSoccerViz() {
     //in ogni elemento g inserisco un cerchio
     teamG
       .append("circle").attr("r", 0)
+      .style("fill", d => tenColorScale(d.region))
       //chain delle transition
       //prima transition
       .transition()
@@ -49,12 +55,14 @@ function createSoccerViz() {
       .on("click", buttonClick)
       .html(d => d);
 
+
     function buttonClick(datapoint) {
       var maxValue = d3.max(incomingData, d => parseFloat(d[datapoint]));
       var radiusScale = d3.scaleLinear()
         .domain([0, maxValue])
         .range([2, 20])
         .clamp(true);
+      //associa un colore al valore secondo un mapping HSL
       var ybRamp = d3.scaleLinear()
         .interpolate(d3.interpolateHsl)
         .domain([0, maxValue])
@@ -65,7 +73,7 @@ function createSoccerViz() {
         .duration(1000)
         .delay(200)
         .attr("r", d => radiusScale(d[datapoint]))
-        .style("fill", d => ybRamp(d[datapoint]));
+        .style("fill", d => tenColorScale(d.region));
     }
 
     teamG
@@ -84,16 +92,17 @@ function createSoccerViz() {
         .attr("y", 10);
       d3.selectAll("g.overallG")
         .select("circle")
-        .style("fill", p => p.region == d.region ? teamColor.darker(.75) : teamColor.brighter(.5));
-      //this e' il gruppo di classe overallG su cui ho fatto mouseover
+        .style("fill", p => {
+          let selectionColor = d3.rgb(tenColorScale(p.region));
+          return p.region == d.region ? selectionColor.brighter(.75) : selectionColor.darker(.5)
+      });
       d3.select(this).raise();
-      // this.parentElement.appendChild(this);
     }
 
     function unHighlight() {
       d3.selectAll("g.overallG")
         .select("circle")
-        .style("fill", teamColor)
+        .style("fill", d => tenColorScale(d.region))
         .attr("class", "");
       d3.selectAll("g.overallG")
         .select("text")
