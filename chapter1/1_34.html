@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <script src="../js/d3.min.js" type="text/JavaScript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.js" type="text/JavaScript"></script>
   </head>
   <body>
     <div id="vizcontainer">
@@ -14,7 +14,7 @@
           .attr("cx",20)
           .attr("cy",20)
           .style("fill","red");
-      
+
       d3.select("svg")
         .append("text")
           .attr("id", "a")
@@ -22,14 +22,14 @@
           .attr("y",20)
           .style("opacity", 0)
           .text("HELLO WORLD");
-      
+
       d3.select("svg")
         .append("circle")
           .attr("r", 100)
           .attr("cx",400)
           .attr("cy",400)
           .style("fill","lightblue");
-      
+
       d3.select("svg")
         .append("text")
           .attr("id", "b")
