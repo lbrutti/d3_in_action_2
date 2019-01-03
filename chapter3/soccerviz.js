@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 d3.csv("../data/worldcup.csv", data => overallTeamViz(data));
 
 function overallTeamViz(incomingData) {
