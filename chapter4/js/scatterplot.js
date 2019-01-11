@@ -10,12 +10,20 @@
       {friends: 8, salary: 74000}
     ];
 
+    var xExtent = d3.extent(scatterData, function(d) { return d.salary; });
+    var yExtent = d3.extent(scatterData, function(d) { return d.friends; });
+    var xScale = d3.scaleLinear()
+        .domain(xExtent)
+        .range([0, 500]);
+    var yScale = d3.scaleLinear()
+        .domain(yExtent)
+        .range([0, 500]);
     d3.select("svg").selectAll("circle")
     .data(scatterData).enter()
     .append("circle")
     .attr("r", 5)
-    .attr("cx", (d,i) => i * 10)
-    .attr("cy", d => d.friends);
+    .attr("cx", (d,i) => xScale(d.salary))
+    .attr("cy", d => yScale(d.friends));
   }
   return dataviz();
 })();
