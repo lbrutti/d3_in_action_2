@@ -44,17 +44,19 @@
 
     //sezione per disegno assi
     //right e bottom si riferiscono alla posizione delle label e tick
-    var yAxis = d3.axisRight().scale(yScale).tickSize(500).ticks(16);
     var xAxis = d3.axisBottom().scale(xScale).tickSize(500).ticks(4);
-    d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
     d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
+    var yAxis = d3.axisRight().scale(yScale).tickSize(500).ticks(16);
+    d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
     // d3.selectAll("#xAxisG").attr("transform", "translate(0,500)");
 
-    d3.select("svg").selectAll("circle")
-      .data(scatterData).enter()
+    d3.select("svg")
+      .selectAll("circle")
+      .data(scatterData)
+      .enter()
       .append("circle")
       .attr("r", 5)
-      .attr("cx", (d, i) => xScale(d.salary))
+      .attr("cx", (d) => xScale(d.salary))
       .attr("cy", d => yScale(d.friends));
   }
   return dataviz();
