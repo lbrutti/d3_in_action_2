@@ -27,7 +27,9 @@ function lineChart(data) {
   //lamda func for Xscale
   const lambdaXScale = d => xScale(d.day);
   const lineGen = (data, attr) => {
-    let lineAttr = d3.line().x(lambdaXScale).y(d => yScale(d[attr]));
+    //d3.line è un funzionale che restituisce una funzione di arietà 1
+    let lineAttr = d3.line().x(lambdaXScale).y(d => yScale(d[attr])).curve(d3.curveCardinal);
+    //restituisco il risultato dell'applicazione del funzionale
     return lineAttr(data);
   };
 
