@@ -14,25 +14,25 @@
     </div>
     <script>
       d3.csv("../data/tweetdata.csv", lineChart);
-      
+
       function lineChart(data) {
-        
+
         xScale = d3.scaleLinear().domain([1,10.5]).range([20,480]);
         yScale = d3.scaleLinear().domain([0,35]).range([480,20]);
-        
+
         xAxis = d3.axisBottom()
           .scale(xScale)
           .tickSize(480)
           .tickValues([1,2,3,4,5,6,7,8,9,10]);
-        
+
         d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
-        
+
         yAxis = d3.axisRight()
           .scale(yScale)
           .ticks(10)
           .tickSize(480);
         d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
-        
+
         d3.select("svg").selectAll("circle.tweets")
           .data(data)
           .enter()
@@ -42,7 +42,7 @@
             .attr("cx", d => xScale(d.day))
             .attr("cy", d => yScale(d.tweets))
             .style("fill", "#fe9a22");
-        
+
         d3.select("svg").selectAll("circle.retweets")
           .data(data)
           .enter()
@@ -52,7 +52,7 @@
             .attr("cx", d => xScale(d.day))
             .attr("cy", d => yScale(d.retweets))
             .style("fill", "#5eaec5");
-        
+
         d3.select("svg").selectAll("circle.favorites")
           .data(data)
           .enter()
@@ -62,11 +62,11 @@
             .attr("cx", d => xScale(d.day))
             .attr("cy", d => yScale(d.favorites))
             .style("fill", "#92c463");
-        
+
         var tweetLine = d3.line()
           .x(d => xScale(d.day))
           .y(d => yScale(d.tweets));
-        
+
         d3.select("svg")
           .append("path")
             .attr("d", tweetLine(data))
