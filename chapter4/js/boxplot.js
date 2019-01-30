@@ -1,5 +1,5 @@
 /* jshint esversion:6 */
-function scatterplot(data) {
+function boxplot(data) {
   var tickSize = 470;
   xScale = d3.scaleLinear().domain([1, 8]).range([20, tickSize]);
   //valori invertiti per mettere lo zero in basso
@@ -97,23 +97,10 @@ function scatterplot(data) {
       d3.select(this)
         .append("line")
         .attr("class", "median")
-        .attr('x1', -10)
-        .attr('x2', 10)
+        .attr('x1', -9)
+        .attr('x2', 9)
         .style('stroke', 'darkgray')
         .style('stroke-width', '4px');
-      // rect.distribution
-      d3.select(this)
-        .append("rect")
-        .attr("class", "distribution")
-        .attr('width', '20')
-        .attr('x', '-10')
-        //per posizionare correttamente i box devo scalare dell'offset fra
-        // mediana (centro del rettangolo) e margine superiore (terzo quartile)
-        .attr('y', yScale(d.q3) - yScale(d.median))
-        .attr('height', `${yScale(d.q1) - yScale(d.q3)}`)
-        .style('fill', 'none')
-        .style('stroke', 'black')
-        .style('stroke-width', '2px');
 
     });
 }
