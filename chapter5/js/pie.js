@@ -2,6 +2,7 @@
 d3.json("../data/tweets.json", pieChart);
 
 function pieChart(data) {
+  var attributes=["numTweets", "numRetweets", "numFavorites"];
   var nestedTweets = d3.nest()
     .key(d => d.user)
     .entries(data.tweets);
@@ -19,7 +20,11 @@ function pieChart(data) {
     .innerRadius(20)
     .outerRadius(100);
 
-  pieChart.value(d => d.numTweets);
+  //indichiamo la funzione per accedere all'attributo cui legare l'ampiezza
+  // della fetta
+  pieChart
+    .sort(null)
+    .value(d => d.numTweets);
 
   var yourPie = pieChart(nestedTweets);
 
@@ -37,4 +42,18 @@ function pieChart(data) {
       .style("fill", (d,i) => fillScale(i))
       .style("stroke", "black")
       .style("stroke-width", "2px");
+
+  // creo un pulsante per ogni attributo su cui voglo filtrare
+  d3.selectAll("btnContainer")
+    .data(attributes)
+    .enter()
+    .append("button")
+    .text(attr=>attr)
+    .on("click", (attr,i)=>{
+        pieChart.value(d => d[attr]);
+        d3.selectAll("path")
+          .data(pieChart(nestedTweets))
+          .transition().duration(1000).attr("d", newArc);
+      });
+
 }
