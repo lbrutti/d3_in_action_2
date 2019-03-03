@@ -52,7 +52,7 @@ function pieChart(data) {
     .attr("d", d => newArc(d.tweetsSlice))
     .style("fill", (d, i) => fillScale(i))
     .style("stroke", "black")
-    .style("stroke-width", "2px");
+    .style("stroke-width", "1px");
 
   // creo un pulsante per ogni attributo su cui voglo filtrare
   d3.selectAll("btnContainer")
